@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Revoke Certificate{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h4 class="mb-0"><i class="bi bi-x-circle"></i> Revoke Certificate (PKI Key Revocation)</h4>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger">
+            <strong><i class="bi bi-exclamation-triangle"></i> Warning:</strong> Revoking a certificate will prevent the user from signing or decrypting new prescriptions. This action is logged and cannot be undone.
+        </div>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label"><strong>Select User to Revoke</strong></label>
+                <select name="user_id" class="form-select" required>
+                    <option value="">-- Choose user --</option>
+                    {% for u in users %}
+                    <option value="{{ u.id }}">{{ u.full_name }} ({{ u.username }}) — {{ u.role }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"><strong>Revocation Reason</strong></label>
+                <select name="reason" class="form-select">
+                    <option value="Key compromised">Key compromised</option>
+                    <option value="User left organisation">User left organisation</option>
+                    <option value="Certificate expired">Certificate expired</option>
+                    <option value="Suspicious activity">Suspicious activity</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Revoke this certificate? This cannot be undone.')">
+                <i class="bi bi-x-circle"></i> Revoke Certificate
+            </button>
+            <a href="{{ url_for('revoked_keys') }}" class="btn btn-outline-secondary ms-2">View CRL</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

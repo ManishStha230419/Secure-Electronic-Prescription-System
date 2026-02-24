@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Admin - Detailed Change Logs{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-12 mb-4">
+    <div class="card">
+      <div class="card-header bg-warning text-dark">
+        <h3 class="mb-0"><i class="bi bi-journal-text"></i> Detailed Change Logs (Before/After Values)</h3>
+        <p class="mb-0 small">Shows exactly what changed from what value to what value</p>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i> <strong>This log shows:</strong> Password changes (hash values), profile updates (before/after), prescription creation/viewing (algorithms used)
+        </div>
+        
+        <form method="GET" class="row g-2 mb-3">
+          <div class="col-md-3">
+            <select name="type" class="form-select">
+              <option value="">All Change Types</option>
+              <option value="password_change" {% if change_type=='password_change' %}selected{% endif %}>Password Changes</option>
+              <option value="profile_update" {% if change_type=='profile_update' %}selected{% endif %}>Profile Updates</option>
+              <option value="prescription_created" {% if change_type=='prescription_created' %}selected{% endif %}>Prescription Created</option>
+              <option value="prescription_viewed" {% if change_type=='prescription_viewed' %}selected{% endif %}>Prescription Viewed</option>
+              <option value="prescription_dispensed" {% if change_type=='prescription_dispensed' %}selected{% endif %}>Prescription Dispensed</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select name="user_id" class="form-select">
+              <option value="">All Users</option>
+              {% for u in all_users %}
+              <option value="{{ u.id }}" {% if user_filter|string==u.id|string %}selected{% endif %}>{{ u.username }} ({{ u.role }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-2"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button></div>
+          <div class="col-md-2"><a href="{{ url_for('admin_change_logs') }}" class="btn btn-outline-secondary w-100">Clear</a></div>
+          <div class="col-md-2"><a href="{{ url_for('download_report') }}" class="btn btn-success w-100"><i class="bi bi-download"></i> Download Report</a></div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>Change Type</th>
+                <th>Field</th>
+                <th>OLD Value</th>
+                <th>NEW Value</th>
+                <th>Algorithms Used</th>
+                <th>IP Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for log in logs.items %}
+              <tr>
+                <td><small>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></td>
+                <td><strong>{{ log.user.username if log.user else 'System' }}</strong><br><small class="text-muted">{{ log.user.role if log.user else '' }}</small></td>
+                <td>
+                  <span class="badge bg-{% if log.change_type=='password_change' %}danger{% elif log.change_type=='profile_update' %}primary{% elif 'prescription' in log.change_type %}success{% else %}secondary{% endif %}">
+                    {{ log.change_type.replace('_', ' ').title() }}
+                  </span>
+                </td>
+                <td><code>{{ log.field_changed }}</code></td>
+                <td>
+                  <div class="bg-light p-2 rounded border" style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">
+                    <strong>FROM:</strong><br>
+                    <small class="text-danger">{{ log.old_value if log.old_value else 'NULL' }}</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="bg-light p-2 rounded border" style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">
+                    <strong>TO:</strong><br>
+                    <small class="text-success">{{ log.new_value if log.new_value else 'NULL' }}</small>
+                  </div>
+                </td>
+                <td>
+                  {% if log.algorithms_used %}
+                    {% set algos = log.algorithms_used|from_json %}
+                    {% for algo in algos %}
+                      <span class="badge bg-info text-dark mb-1">{{ algo }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td><code class="small">{{ log.ip_address }}</code></td>
+              </tr>
+              <tr class="table-light">
+                <td colspan="8">
+                  <small><strong>Details:</strong> {{ log.details if log.details else 'No additional details' }}</small>
+                </td>
+              </tr>
+              {% else %}
+              <tr><td colspan="8" class="text-center text-muted py-4">No change logs found</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <nav>
+          <ul class="pagination justify-content-center">
+            {% if logs.has_prev %}<li class="page-item"><a class="page-link" href="?page={{ logs.prev_num }}&type={{ change_type }}&user_id={{ user_filter }}">Previous</a></li>{% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ logs.page }} of {{ logs.pages }}</span></li>
+            {% if logs.has_next %}<li class="page-item"><a class="page-link" href="?page={{ logs.next_num }}&type={{ change_type }}&user_id={{ user_filter }}">Next</a></li>{% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

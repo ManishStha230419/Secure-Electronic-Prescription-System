@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-file-earmark-text"></i> Prescription Details
+                    <span class="badge bg-{{ 'success' if prescription.status == 'active' else 'secondary' }} float-end">
+                        {{ prescription.status|capitalize }}
+                    </span>
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Prescription ID</h5>
+                        <p class="lead"><code class="fs-5">{{ prescription.prescription_id }}</code></p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h5>Created</h5>
+                        <p class="lead">{{ prescription.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="text-muted"><i class="bi bi-person-badge"></i> Doctor</h6>
+                                <p class="mb-1"><strong>{{ prescription.doctor.full_name }}</strong></p>
+                                <p class="mb-1"><small>{{ prescription.doctor.registration_number }}</small></p>
+                                <p class="mb-0"><small>{{ prescription.doctor.hospital }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="text-muted"><i class="bi bi-person"></i> Patient</h6>
+                                <p class="mb-1"><strong>{{ prescription.patient.full_name }}</strong></p>
+                                <p class="mb-0"><small>{{ prescription.patient.registration_number }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if decrypted_data %}
+                <div class="alert alert-success">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <i class="bi bi-unlock"></i> <strong>Prescription Decrypted Successfully</strong>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-{{ 'success' if decrypted_data.signature_valid else 'danger' }}">
+                                <i class="bi bi-{{ 'check-circle' if decrypted_data.signature_valid else 'x-circle' }}"></i>
+                                Signature {{ 'Valid' if decrypted_data.signature_valid else 'Invalid' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-capsule"></i> Prescription Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong><i class="bi bi-prescription2"></i> Medication:</strong>
+                                <p class="lead mb-0">{{ decrypted_data.medication }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong><i class="bi bi-calculator"></i> Dosage:</strong>
+                                <p class="lead mb-0">{{ decrypted_data.dosage }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <strong>Quantity:</strong>
+                                <p class="mb-0">{{ decrypted_data.quantity }}</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Duration:</strong>
+                                <p class="mb-0">{{ decrypted_data.duration }}</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <strong>Frequency:</strong>
+                                <p class="mb-0">{{ decrypted_data.frequency }}</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Drug Schedule:</strong>
+                            <p class="mb-0">{{ decrypted_data.schedule }}</p>
+                        </div>
+                        {% if decrypted_data.diagnosis %}
+                        <div class="mb-3">
+                            <strong>Diagnosis:</strong>
+                            <p class="mb-0">{{ decrypted_data.diagnosis }}</p>
+                        </div>
+                        {% endif %}
+                        {% if decrypted_data.notes %}
+                        <div>
+                            <strong>Special Instructions:</strong>
+                            <p class="mb-0">{{ decrypted_data.notes }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if session.role == 'pharmacist' and prescription.status == 'active' %}
+                <form method="POST" action="{{ url_for('dispense_prescription', id=prescription.id) }}" class="mt-4">
+                    <button type="submit" class="btn btn-success btn-lg w-100" onclick="return confirm('Confirm dispensing this prescription?')">
+                        <i class="bi bi-check-circle"></i> Dispense Prescription
+                    </button>
+                </form>
+                {% endif %}
+                
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-lock"></i> <strong>Encrypted Prescription</strong><br>
+                    <small>This prescription is encrypted. Only authorized pharmacists and the patient can decrypt it.</small>
+                </div>
+                {% endif %}
+                
+                {% if prescription.status == 'dispensed' and prescription.dispensed_at %}
+                <div class="alert alert-info mt-4">
+                    <strong><i class="bi bi-check-circle"></i> Dispensed</strong><br>
+                    By: {{ prescription.pharmacist.full_name if prescription.pharmacist else 'Unknown' }}<br>
+                    On: {{ prescription.dispensed_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('prescriptions') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-house"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
