@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}About - Nepal E-Prescription{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card mb-4">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-shield-lock-fill display-1 text-primary"></i>
+                <h1 class="display-4 mt-3">Nepal E-Prescription System</h1>
+                <p class="lead text-muted">Secure Electronic Prescription Management Platform</p>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> About the System</h5>
+            </div>
+            <div class="card-body">
+                <p>The Nepal E-Prescription System is a state-of-the-art electronic prescription management platform designed for Nepal's healthcare infrastructure.</p>
+                <h6 class="mt-4">Key Features:</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>End-to-end encryption</li>
+                            <li>Digital signatures</li>
+                            <li>Role-based access control</li>
+                            <li>Complete audit trail</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Real-time notifications</li>
+                            <li>Advanced analytics</li>
+                            <li>Mobile-responsive</li>
+                            <li>Multi-user support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-lock-fill"></i> Security & Encryption</h5>
+            </div>
+            <div class="card-body">
+                <p>Our system implements 8 industry-standard cryptographic algorithms:</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Purpose</th>
+                                <th>Key Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>RSA-2048</strong></td><td>Asymmetric encryption</td><td>2048 bits</td></tr>
+                            <tr><td><strong>AES-256-GCM</strong></td><td>Symmetric encryption</td><td>256 bits</td></tr>
+                            <tr><td><strong>RSA-PSS</strong></td><td>Digital signatures</td><td>2048 bits</td></tr>
+                            <tr><td><strong>SHA-256</strong></td><td>Cryptographic hashing</td><td>256 bits</td></tr>
+                            <tr><td><strong>X.509 v3</strong></td><td>Certificate structure</td><td>-</td></tr>
+                            <tr><td><strong>OAEP</strong></td><td>RSA padding</td><td>-</td></tr>
+                            <tr><td><strong>PSS</strong></td><td>Signature padding</td><td>-</td></tr>
+                            <tr><td><strong>MGF1-SHA256</strong></td><td>Mask generation</td><td>-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-code-square"></i> Technology Stack</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Backend:</h6>
+                        <ul>
+                            <li>Python 3.10+</li>
+                            <li>Flask Framework</li>
+                            <li>SQLAlchemy ORM</li>
+                            <li>Cryptography Library</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Frontend:</h6>
+                        <ul>
+                            <li>Bootstrap 5</li>
+                            <li>Chart.js</li>
+                            <li>Bootstrap Icons</li>
+                            <li>Responsive Design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-mortarboard"></i> Academic Project</h5>
+            </div>
+            <div class="card-body">
+                <p>Developed as part of ST6051CEM Practical Cryptography module.</p>
+                <p class="mb-0">
+                    <strong>Module:</strong> ST6051CEM Practical Cryptography<br>
+                    <strong>Year:</strong> 2024<br>
+                    <strong>Version:</strong> 2.0 Production
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

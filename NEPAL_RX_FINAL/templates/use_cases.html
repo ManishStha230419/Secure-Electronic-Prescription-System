@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Real-World Use Cases{% endblock %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-briefcase"></i> Real-World Use Case Demonstrations</h4>
+        <small>Assignment Requirement 4: Three Use Cases Showing Cryptographic Feature Application</small>
+    </div>
+    <div class="card-body">
+        {% for case in cases %}
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-{{ case.icon }}"></i> {{ case.title }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <strong><i class="bi bi-exclamation-triangle"></i> Security Problem:</strong><br>{{ case.problem }}
+                        </div>
+                        <div class="alert alert-success">
+                            <strong><i class="bi bi-shield-check"></i> Cryptographic Solution:</strong><br>{{ case.solution }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6><i class="bi bi-cpu"></i> Algorithms Used:</h6>
+                                {% for algo in case.algorithms %}
+                                <span class="badge bg-primary me-1 mb-1">{{ algo }}</span>
+                                {% endfor %}
+                                <hr>
+                                <h6><i class="bi bi-arrow-right-circle"></i> How It Works:</h6>
+                                <p class="small mb-0">{{ case.how }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}500 - Server Error{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <div class="card">
+            <div class="card-body py-5">
+                <i class="bi bi-exclamation-octagon display-1 text-danger"></i>
+                <h1 class="display-4 mt-3">500</h1>
+                <h3 class="text-muted">Internal Server Error</h3>
+                <p class="lead mt-3">Something went wrong on our end. We're working to fix it!</p>
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i> The error has been logged and our team has been notified.
+                </div>
+                <div class="mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-house-fill"></i> Go to Homepage
+                    </a>
+                    <button onclick="window.location.reload()" class="btn btn-outline-primary btn-lg ms-2">
+                        <i class="bi bi-arrow-clockwise"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

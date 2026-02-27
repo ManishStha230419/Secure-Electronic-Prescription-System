@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header bg-danger text-white">
+    <h3 class="mb-0"><i class="bi bi-shield-shaded"></i> Admin Dashboard - Complete Process Logging</h3>
+  </div>
+  <div class="card-body">
+    <div class="alert alert-success">
+      <strong><i class="bi bi-file-earmark-text"></i> Log Files Created in Code Folder!</strong>
+      <p class="mb-0 mt-2">All process logs are automatically saved as text files in the same folder as App.py:</p>
+      <ul class="mb-0 mt-2">
+        <li><code>password_save_process.log</code> - All password save steps (5 steps each)</li>
+        <li><code>prescription_encrypt_process.log</code> - All prescription encryption steps (9 steps each)</li>
+        <li><code>prescription_decrypt_process.log</code> - All prescription decryption steps (5 steps each)</li>
+        <li><code>complete_process_logs.log</code> - Combined log of all processes</li>
+      </ul>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <a href="{{ url_for('audit_log') }}" class="text-decoration-none">
+          <div class="stat-card stat-success">
+            <i class="bi bi-gear-fill float-end"></i>
+            <h3>{{ total_process_logs }}</h3>
+            <p>Process Steps Logged</p>
+            <small>View in database</small>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card stat-info">
+          <i class="bi bi-file-earmark-text float-end"></i>
+          <h3>4</h3>
+          <p>Log Files Created</p>
+          <small>In code folder</small>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card stat-primary">
+          <i class="bi bi-people float-end"></i>
+          <h3>{{ total_users }}</h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card stat-warning">
+          <i class="bi bi-file-earmark-medical float-end"></i>
+          <h3>{{ total_rxs }}</h3>
+          <p>Prescriptions</p>
+        </div>
+      </div>
+    </div>
+
+    {% if log_files %}
+    <div class="card mb-4">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="bi bi-folder2-open"></i> Log Files in Code Folder</h5>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>File Name</th>
+              <th>Size</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for file in log_files %}
+            <tr>
+              <td><code>{{ file.name }}</code></td>
+              <td>{{ file.size }}</td>
+              <td><small>{{ file.path }}</small></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <a href="{{ url_for('download_process_report') }}" class="btn btn-success btn-lg w-100">
+          <i class="bi bi-download"></i> Download Complete Report
+        </a>
+      </div>
+      <div class="col-md-6">
+        <a href="{{ url_for('audit_log') }}" class="btn btn-primary btn-lg w-100">
+          <i class="bi bi-list-ul"></i> View Process Logs
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Process Logs (Latest Steps)</h5>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Process</th>
+              <th>Step</th>
+              <th>Algorithm</th>
+              <th>Resource</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in recent_processes %}
+            <tr>
+              <td><small>{{ log.timestamp.strftime('%H:%M:%S') }}</small></td>
+              <td>
+                <span class="badge bg-{% if log.process_type=='password_save' %}danger{% elif log.process_type=='prescription_encrypt' %}success{% else %}info{% endif %}">
+                  {{ log.process_type.replace('_', ' ').title() }}
+                </span>
+              </td>
+              <td><strong>Step {{ log.step_number }}</strong></td>
+              <td><span class="badge bg-secondary">{{ log.algorithm_used }}</span></td>
+              <td><code class="small">{{ log.resource_id }}</code></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

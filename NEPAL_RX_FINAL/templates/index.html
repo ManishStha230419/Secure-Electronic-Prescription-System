@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <h1 class="display-3 mb-4">
+                    <i class="bi bi-shield-lock-fill" style="color: #667eea;"></i><br>
+                    Nepal Prescription System
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Secure Electronic Prescription Management with Military-Grade Encryption
+                </p>
+                
+                <div class="row mt-5 mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <i class="bi bi-lock-fill display-1 text-primary"></i>
+                                <h5 class="mt-3">AES-256-GCM</h5>
+                                <p class="text-muted small">Data Encryption</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <i class="bi bi-key-fill display-1 text-success"></i>
+                                <h5 class="mt-3">RSA-2048</h5>
+                                <p class="text-muted small">Key Exchange</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <i class="bi bi-pen-fill display-1 text-danger"></i>
+                                <h5 class="mt-3">RSA-PSS</h5>
+                                <p class="text-muted small">Digital Signatures</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <i class="bi bi-shield-check display-1 text-warning"></i>
+                                <h5 class="mt-3">X.509 v3</h5>
+                                <p class="text-muted small">PKI Certificates</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    {% if not session.user_id %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-3 px-5">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg px-5">
+                        <i class="bi bi-person-plus"></i> Register
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-5">
+                        <i class="bi bi-speedometer2"></i> Go to Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <div class="alert alert-info mt-5 text-start">
+                    <h5><i class="bi bi-info-circle"></i> Complete Security Features:</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="mb-0">
+                                <li><strong>Confidentiality:</strong> AES-256-GCM encryption protects all prescription data</li>
+                                <li><strong>Integrity:</strong> SHA-256 hashing detects any tampering</li>
+                                <li><strong>Authentication:</strong> X.509 certificates verify user identities</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="mb-0">
+                                <li><strong>Non-repudiation:</strong> RSA-PSS signatures prove authorship</li>
+                                <li><strong>Access Control:</strong> Role-based permissions system</li>
+                                <li><strong>Audit Trail:</strong> Complete logging of all actions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

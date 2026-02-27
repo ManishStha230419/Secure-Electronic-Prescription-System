@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}404 - Page Not Found{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <div class="card">
+            <div class="card-body py-5">
+                <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                <h1 class="display-4 mt-3">404</h1>
+                <h3 class="text-muted">Page Not Found</h3>
+                <p class="lead mt-3">The page you're looking for doesn't exist or has been moved.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-house-fill"></i> Go to Homepage
+                    </a>
+                    {% if session.user_id %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary btn-lg ms-2">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

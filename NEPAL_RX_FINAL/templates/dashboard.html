@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2>
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                    <span class="badge bg-primary float-end">{{ user.role|capitalize }}</span>
+                </h2>
+                <p class="text-muted">Welcome back, {{ user.full_name }}!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    {% if user.role == 'doctor' %}
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="bi bi-file-earmark-text display-4"></i>
+            <h3>{{ stats.total }}</h3>
+            <p class="mb-0">Total Prescriptions</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+            <i class="bi bi-check-circle display-4"></i>
+            <h3>{{ stats.active }}</h3>
+            <p class="mb-0">Active</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+            <i class="bi bi-archive display-4"></i>
+            <h3>{{ stats.dispensed }}</h3>
+            <p class="mb-0">Dispensed</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+            <i class="bi bi-people display-4"></i>
+            <h3>{{ stats.patients }}</h3>
+            <p class="mb-0">Unique Patients</p>
+        </div>
+    </div>
+    {% elif user.role == 'pharmacist' %}
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);">
+            <i class="bi bi-hourglass-split display-4"></i>
+            <h3>{{ stats.pending }}</h3>
+            <p class="mb-0">Pending Prescriptions</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+            <i class="bi bi-check2-square display-4"></i>
+            <h3>{{ stats.today }}</h3>
+            <p class="mb-0">Dispensed Today</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <i class="bi bi-bar-chart display-4"></i>
+            <h3>{{ stats.total }}</h3>
+            <p class="mb-0">Total Dispensed</p>
+        </div>
+    </div>
+    {% elif user.role == 'patient' %}
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="bi bi-file-earmark-medical display-4"></i>
+            <h3>{{ stats.total }}</h3>
+            <p class="mb-0">My Prescriptions</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+            <i class="bi bi-capsule display-4"></i>
+            <h3>{{ stats.active }}</h3>
+            <p class="mb-0">Active</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+            <i class="bi bi-check-all display-4"></i>
+            <h3>{{ stats.dispensed }}</h3>
+            <p class="mb-0">Dispensed</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+            <i class="bi bi-person-badge display-4"></i>
+            <h3>{{ stats.doctors }}</h3>
+            <p class="mb-0">Doctors</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if user.role == 'doctor' %}
+                <a href="{{ url_for('create_prescription') }}" class="btn btn-primary mb-3">
+                    <i class="bi bi-plus-circle"></i> Create New Prescription
+                </a>
+                {% endif %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>{% if user.role == 'doctor' %}Patient{% else %}Doctor{% endif %}</th>
+                                <th>Medication</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rx in recent_rx %}
+                            <tr>
+                                <td><code>{{ rx.prescription_id }}</code></td>
+                                <td>{{ rx.patient.full_name if user.role == 'doctor' else rx.doctor.full_name }}</td>
+                                <td>{{ rx.medication }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if rx.status == 'active' else 'secondary' }}">
+                                        {{ rx.status|capitalize }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_prescription', id=rx.id) }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('prescriptions') }}" class="btn btn-outline-primary">
+                    View All Prescriptions <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="bi bi-bell"></i> Notifications</h6>
+            </div>
+            <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                {% if notifications %}
+                    {% for notif in notifications %}
+                    <div class="alert alert-{{ notif.type }} alert-dismissible fade show" role="alert">
+                        <strong>{{ notif.title }}</strong><br>
+                        <small>{{ notif.message }}</small>
+                        <a href="{{ url_for('mark_notification_read', id=notif.id) }}" class="btn-close"></a>
+                    </div>
+                    {% endfor %}
+                    <a href="{{ url_for('notifications') }}" class="btn btn-sm btn-outline-info w-100">View All</a>
+                {% else %}
+                    <p class="text-muted text-center">No new notifications</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0"><i class="bi bi-activity"></i> Recent Actions</h6>
+            </div>
+            <div class="card-body" style="max-height: 250px; overflow-y: auto;">
+                {% for log in recent_logs[:5] %}
+                <div class="mb-2">
+                    <small><strong>{{ log.action }}</strong></small><br>
+                    <small class="text-muted">{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+                <hr class="my-2">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
